@@ -14,13 +14,24 @@ public class EventBus {
         eventTypeBySubscriber = new HashMap<>();
         subscriptionsByEventType = new HashMap<>();
     }
+    public void printSubscriptionByEventType() {
+        if (subscriptionsByEventType == null) {
+            System.out.println("subscriptionsByEventType is null");
+            return;
+        }
+        for (Class<?> key : subscriptionsByEventType.keySet()) {
+            System.out.println("EventType: " + key.getSimpleName());
+            for (Subscription subscription : subscriptionsByEventType.get(key)) {
+                System.out.println("  " + subscription.subscriber.getClass().getSimpleName());
+            }
+        }
+    }
     private static class Holder {
         static EventBus instance = new EventBus();
     }
     public static EventBus getInstance() {
         return Holder.instance;
     }
-
     public void register(Object subscriber) {
         Class<?> subscriberClass = subscriber.getClass();
         List<SubscriberMethod> subscriberMethods = new ArrayList<>();
@@ -37,11 +48,10 @@ public class EventBus {
                 subscribe(subscriber, method);
             }
         }
+
     }
-
-
     private void subscribe(Object subscriber, SubscriberMethod method) {
-        Logger.i(subscriber.getClass().getSimpleName() + ":" + method.method.getName());
+//        Logger.i(subscriber.getClass().getSimpleName() + ":" + method.method.getName());
         CopyOnWriteArrayList<Subscription> subscriptions = subscriptionsByEventType.get(method.eventType);
         if (subscriptions == null) {
             subscriptions = new CopyOnWriteArrayList<>();
@@ -55,7 +65,6 @@ public class EventBus {
         eventTypes.add(method.eventType);
         eventTypeBySubscriber.put(subscriber, eventTypes);
     }
-
     public void unregister(Object subscriber) {
         List<Class<?>> eventTypes = eventTypeBySubscriber.get(subscriber);
         if (eventTypes != null)  {
@@ -64,7 +73,6 @@ public class EventBus {
             }
         }
     }
-
     private void unsubscribe(Object subscriber, Class<?> eventType) {
         List<Subscription> subscriptionList = subscriptionsByEventType.get(eventType);
         if (subscriptionList == null) {
@@ -82,12 +90,11 @@ public class EventBus {
     public void post(Object event) {
         List<Subscription> subscriptionList = subscriptionsByEventType.get(event.getClass());
         if (subscriptionList == null) {
-            Logger.i("not found subscriber");
+//            Logger.i("not found subscriber");
             return;
         }
         for (Subscription subscription : subscriptionList) {
             subscription.notifySubscriber(event);
         }
     }
-
 }

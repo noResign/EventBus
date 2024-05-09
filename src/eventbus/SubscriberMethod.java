@@ -13,7 +13,6 @@ public class SubscriberMethod {
         this.method = method;
         this.eventType = eventType;
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -22,7 +21,6 @@ public class SubscriberMethod {
         if (method != null ? !method.equals(that.method) : that.method != null) return false;
         return eventType != null ? eventType.equals(that.eventType) : that.eventType == null;
     }
-
     @Override
     public int hashCode() {
         int result = method != null ? method.hashCode() : 0;
