@@ -8,7 +8,4 @@ public class Logger {
     public static void v(String text) {
         System.out.println(TAG + "+" + text);
     }
-    public static void i(String text) {
-        System.out.println(TAG + "+" + text);
-    }
 }
